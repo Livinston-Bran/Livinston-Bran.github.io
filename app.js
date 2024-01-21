@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Smooth scrolling for anchor links
+
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener("click", function (e) {
             e.preventDefault();
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Your existing code
+
     [...document.querySelectorAll(".control")].forEach(button => {
         button.addEventListener("click", function() {
             document.querySelector(".active-btn").classList.remove("active-btn");
