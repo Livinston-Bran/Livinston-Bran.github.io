@@ -1,339 +1,919 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bran || Portfolio</title>
-    <link rel="stylesheet" href="styles/styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bran Livinston — Full Stack Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #080c12;
+    --surface: #0e1420;
+    --card: #111827;
+    --border: rgba(255,255,255,0.07);
+    --accent: #00e5a0;
+    --accent2: #0ea5e9;
+    --accent3: #f59e0b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed; top: 0; left: 0;
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s, opacity 0.2s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    position: fixed; top: 0; left: 0;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(0,229,160,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 1000; opacity: 0.4;
+  }
+
+  /* Grid bg */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.2rem 4rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    background: rgba(8,12,18,0.8);
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+  .nav-logo span { color: var(--muted); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    transition: color 0.2s;
+    text-transform: uppercase;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-status {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-family: var(--mono); font-size: 0.7rem; color: var(--muted);
+  }
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 8rem 4rem 4rem;
+    position: relative; z-index: 1;
+  }
+  .hero-inner {
+    max-width: 1200px; margin: 0 auto; width: 100%;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+  }
+  .hero-tag {
+    font-family: var(--mono); font-size: 0.72rem;
+    color: var(--accent); letter-spacing: 0.2em;
+    text-transform: uppercase; margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .hero-tag::before { content: '//'; color: var(--muted); }
+  h1.hero-name {
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    font-weight: 800; line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+  }
+  h1.hero-name .line2 { color: var(--accent); display: block; }
+  .hero-role {
+    font-family: var(--mono); font-size: 1rem;
+    color: var(--accent2); margin: 1.5rem 0;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .hero-role::before { content: '$'; color: var(--muted); }
+  .hero-desc {
+    color: var(--muted); line-height: 1.8; font-size: 0.95rem;
+    max-width: 480px; margin-bottom: 2.5rem;
+  }
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 0.8rem 1.8rem;
+    background: var(--accent); color: var(--bg);
+    font-family: var(--mono); font-size: 0.78rem;
+    font-weight: 700; letter-spacing: 0.1em;
+    text-decoration: none; border: none; cursor: pointer;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { background: #00ffa8; transform: translateY(-2px); }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 0.8rem 1.8rem;
+    background: transparent; color: var(--text);
+    font-family: var(--mono); font-size: 0.78rem;
+    letter-spacing: 0.1em; text-decoration: none;
+    border: 1px solid var(--border);
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Terminal card */
+  .hero-terminal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+    position: relative;
+  }
+  .terminal-bar {
+    background: #1a2030;
+    padding: 0.7rem 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .t-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .t-dot.r { background: #ff5f57; }
+  .t-dot.y { background: #febc2e; }
+  .t-dot.g { background: #28c840; }
+  .terminal-title {
+    font-family: var(--mono); font-size: 0.7rem;
+    color: var(--muted); margin-left: auto; margin-right: auto;
+  }
+  .terminal-body { padding: 1.5rem; font-family: var(--mono); font-size: 0.78rem; line-height: 2; }
+  .t-line { display: flex; gap: 0.6rem; }
+  .t-prompt { color: var(--accent); }
+  .t-cmd { color: var(--text); }
+  .t-out { color: var(--muted); padding-left: 1rem; }
+  .t-key { color: var(--accent2); }
+  .t-val { color: var(--accent3); }
+  .t-string { color: #a78bfa; }
+  .t-cursor { display: inline-block; width: 8px; height: 14px; background: var(--accent); animation: blink 1s step-end infinite; vertical-align: middle; }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+  /* STATS BAR */
+  .stats-bar {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    padding: 1.5rem 4rem;
+    position: relative; z-index: 1;
+  }
+  .stats-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(4,1fr);
+    gap: 1rem;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-size: 2.4rem; font-weight: 800;
+    color: var(--accent); font-family: var(--mono);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.7rem; color: var(--muted);
+    letter-spacing: 0.15em; text-transform: uppercase;
+    margin-top: 0.3rem;
+  }
+
+  /* SECTIONS */
+  section { padding: 6rem 4rem; position: relative; z-index: 1; }
+  .section-inner { max-width: 1200px; margin: 0 auto; }
+  .section-header { margin-bottom: 3.5rem; }
+  .section-label {
+    font-family: var(--mono); font-size: 0.7rem;
+    color: var(--accent); letter-spacing: 0.2em;
+    text-transform: uppercase; margin-bottom: 0.8rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800; letter-spacing: -0.02em;
+  }
+
+  /* EXPERIENCE */
+  .exp-list { display: flex; flex-direction: column; gap: 1.5rem; }
+  .exp-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    position: relative;
+    transition: border-color 0.25s, transform 0.25s;
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+  }
+  .exp-card:hover { border-color: var(--accent); transform: translateX(6px); }
+  .exp-card::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; background: var(--accent);
+  }
+  .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
+  .exp-title { font-size: 1.15rem; font-weight: 700; }
+  .exp-company { color: var(--accent2); font-size: 0.9rem; margin-top: 0.2rem; }
+  .exp-date {
+    font-family: var(--mono); font-size: 0.7rem;
+    color: var(--muted); background: var(--surface);
+    padding: 0.3rem 0.8rem; border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .exp-type {
+    font-family: var(--mono); font-size: 0.65rem;
+    color: var(--accent); letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 1rem;
+  }
+  .exp-bullets { list-style: none; }
+  .exp-bullets li {
+    color: var(--muted); font-size: 0.88rem;
+    line-height: 1.8; padding-left: 1.2rem; position: relative;
+    margin-bottom: 0.3rem;
+  }
+  .exp-bullets li::before { content: '→'; color: var(--accent); position: absolute; left: 0; }
+
+  /* PROJECTS */
+  .projects-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 1.8rem;
+    transition: all 0.25s;
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+    position: relative; overflow: hidden;
+  }
+  .project-card::after {
+    content: '';
+    position: absolute; top: 0; right: 0;
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 0 16px 16px 0;
+    border-color: transparent var(--accent) transparent transparent;
+  }
+  .project-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,229,160,0.08); }
+  .project-stack {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .stack-tag {
+    font-family: var(--mono); font-size: 0.65rem;
+    color: var(--accent3); background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.2);
+    padding: 0.15rem 0.5rem;
+  }
+  .project-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.7rem; }
+  .project-desc { color: var(--muted); font-size: 0.85rem; line-height: 1.7; margin-bottom: 1.2rem; }
+  .project-link {
+    font-family: var(--mono); font-size: 0.72rem;
+    color: var(--accent2); text-decoration: none;
+    letter-spacing: 0.05em;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    transition: gap 0.2s;
+  }
+  .project-link:hover { gap: 0.8rem; }
+
+  /* EDUCATION */
+  .edu-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .edu-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 1.5rem 1.8rem;
+    transition: border-color 0.2s;
+    position: relative;
+  }
+  .edu-card:hover { border-color: var(--accent2); }
+  .edu-year {
+    font-family: var(--mono); font-size: 0.68rem;
+    color: var(--accent); background: rgba(0,229,160,0.07);
+    border: 1px solid rgba(0,229,160,0.2);
+    display: inline-block; padding: 0.2rem 0.6rem; margin-bottom: 0.8rem;
+  }
+  .edu-degree { font-weight: 700; font-size: 1rem; margin-bottom: 0.3rem; }
+  .edu-inst { color: var(--accent2); font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .edu-detail { color: var(--muted); font-size: 0.8rem; line-height: 1.6; }
+
+  /* SKILLS */
+  .skills-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+  .skills-group-title {
+    font-family: var(--mono); font-size: 0.72rem;
+    color: var(--accent); letter-spacing: 0.15em;
+    text-transform: uppercase; margin-bottom: 1.2rem;
+    padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
+  }
+  .skill-row { margin-bottom: 1.2rem; }
+  .skill-top { display: flex; justify-content: space-between; margin-bottom: 0.4rem; }
+  .skill-name { font-size: 0.85rem; font-weight: 600; }
+  .skill-pct { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+  .skill-bar {
+    height: 3px; background: var(--surface);
+    border: 1px solid var(--border); position: relative;
+  }
+  .skill-fill {
+    position: absolute; top: 0; left: 0; height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+    width: 0;
+  }
+  .skill-fill.animated { }
+  .tech-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .tech-tag {
+    font-family: var(--mono); font-size: 0.7rem;
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--border);
+    color: var(--muted); transition: all 0.2s;
+    cursor: default;
+  }
+  .tech-tag:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,229,160,0.05); }
+
+  /* COMMUNITY */
+  .community-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+  .community-card {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 1.5rem; transition: all 0.2s;
+    position: relative;
+  }
+  .community-card:hover { border-color: var(--accent3); }
+  .community-card::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent3), transparent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .community-card:hover::before { transform: scaleX(1); }
+  .c-date {
+    font-family: var(--mono); font-size: 0.65rem; color: var(--accent3);
+    margin-bottom: 0.6rem;
+  }
+  .c-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem; }
+  .c-org { color: var(--muted); font-size: 0.8rem; margin-bottom: 0.7rem; }
+  .c-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .c-tag {
+    font-family: var(--mono); font-size: 0.62rem;
+    color: var(--accent); padding: 0.15rem 0.5rem;
+    background: rgba(0,229,160,0.07); border: 1px solid rgba(0,229,160,0.15);
+  }
+
+  /* CERTIFICATIONS */
+  .certs-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+  .cert-card {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 1.2rem 1.5rem; display: flex; align-items: center; gap: 1rem;
+    transition: border-color 0.2s;
+  }
+  .cert-card:hover { border-color: var(--accent2); }
+  .cert-icon { color: var(--accent2); font-size: 1.4rem; flex-shrink: 0; }
+  .cert-name { font-size: 0.85rem; font-weight: 600; line-height: 1.4; }
+  .cert-by { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* CONTACT */
+  #contact { background: var(--surface); border-top: 1px solid var(--border); }
+  .contact-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  .contact-info-list { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
+  .contact-row {
+    display: flex; align-items: center; gap: 1rem;
+    font-size: 0.88rem;
+  }
+  .contact-icon-box {
+    width: 36px; height: 36px; background: var(--card);
+    border: 1px solid var(--border); display: flex;
+    align-items: center; justify-content: center;
+    font-size: 0.9rem; color: var(--accent); flex-shrink: 0;
+  }
+  .contact-val { color: var(--muted); font-family: var(--mono); font-size: 0.8rem; }
+  .contact-val a { color: inherit; text-decoration: none; transition: color 0.2s; }
+  .contact-val a:hover { color: var(--accent); }
+  .social-row { display: flex; gap: 0.8rem; margin-top: 2rem; flex-wrap: wrap; }
+  .social-btn {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    background: var(--card); border: 1px solid var(--border);
+    font-family: var(--mono); font-size: 0.7rem; color: var(--muted);
+    text-decoration: none; transition: all 0.2s;
+  }
+  .social-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* References */
+  .refs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .ref-card {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 1.5rem;
+  }
+  .ref-name { font-weight: 700; font-size: 1rem; margin-bottom: 0.3rem; }
+  .ref-role { color: var(--accent2); font-size: 0.82rem; margin-bottom: 0.7rem; }
+  .ref-phone { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+
+  /* FOOTER */
+  footer {
+    text-align: center; padding: 2rem 4rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono); font-size: 0.72rem;
+    color: var(--muted); position: relative; z-index: 1;
+  }
+  footer span { color: var(--accent); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); }
+
+  /* ANIMATIONS */
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-terminal { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .stats-bar { padding: 1.5rem; }
+    .stats-inner { grid-template-columns: repeat(2,1fr); }
+    .skills-layout { grid-template-columns: 1fr; }
+    .contact-layout { grid-template-columns: 1fr; }
+    .refs-grid { grid-template-columns: 1fr; }
+    #hero { padding: 7rem 1.5rem 3rem; }
+  }
+</style>
 </head>
-<body class="main-content">
-    
-    <!-- home -->
-    <header class="container header active" id="home">
-        <div class="header-content">
-            <div class="left-header">
-                <div class="h-shape"></div>
-                <div class="image">
-                    <img src="img/hero.png" alt="">
-                </div>
-            </div>
-            <div class="right-header">
-                <h1 class="name">
-                    Hi, I'm 
-                    <br>
-                    <span>Bran Livinston</span>
-                    <br>
-                    DEVELOPER
-                </h1>
-                <p>
-                    Enthusiastic and responsible Full-Stack Software Engineer with experience in developing and maintaining high-performance applications. Passionate about building scalable solutions and continuously updating my knowledge.
-                </p>
-                <div class="btn-con">
-                    <a href="cv/Bran Livinston CV Resume.pdf" class="main-btn">
-                        <span class="btn-text">Download CV</span>
-                        <span class="btn-icon"><i class="fas fa-download"></i></span>
-                    </a>
-                </div>
-            </div>
-            
-        </div>
-    </header>
+<body>
 
-    <!-- about -->
-    <main>
-        <section class="container about" id="about">
-            <div class="main-title">
-                <h2>About <span>me</span><span class="bg-text">my stats</span></h2>
-            </div>
-            <div class="about-container">
-                <div class="left-about">
-                    <h4>Information About me</h4>
-                    <p>
-                        Hello, I’m Bran Livinston. I’m 24 years old young and highly active enthusiast. 
-                        I’m a Developer and Programmer. Living in Batticaloa Sri Lanka.  
-                        My interests are in Devops Engineering. I have a good knowledge of Programming Languages. 
-                        I am a motivated, organized and friendly individual with a passion for coding and software development.
-                    </p>
-                    <div class="btn-con">
-                        <a href="cv/Bran Livinston CV Resume.pdf" class="main-btn">
-                            <span class="btn-text">Download CV</span>
-                            <span class="btn-icon"><i class="fas fa-download"></i></span>
-                        </a>
-                    </div>
-                </div>
-                <div class="right-about">
-                    <div class="about-item">
-                        <div class="abt-text">
-                            <p class="large-text">49+</p>
-                            <p class="small-text">Projects <br /> Completed</p>
-                        </div>
-                    </div>
-                    <div class="about-item">
-                        <div class="abt-text">
-                            <p class="large-text">2+</p>
-                            <p class="small-text">Years of <br /> experience</p>
-                        </div>
-                    </div>
-                    <div class="about-item">
-                        <div class="abt-text">
-                            <p class="large-text">9+</p>
-                            <p class="small-text">Languages <br /> used</p>
-                        </div>
-                    </div>
-                    <div class="about-item">
-                        <div class="abt-text">
-                            <p class="large-text">9+</p>
-                            <p class="small-text">Tools <br /> and Framework</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <br><br><br><br>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
 
-            <div class="main-title">
-                <h2>My <span>Skills</span><span class="bg-text">Coding</span></h2>
-            </div>
-            <p class="port-text">
-                Here is some of my work that I've done in various programming languages.
-            </p>
-            <br>
-            <h1>Languages</h1>
-            <br>
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg" height="80" width="92" alt="csharp logo"  />
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" height="80" width="92" alt="html5 logo"  />
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" height="80" width="92" alt="css3 logo"  />
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" height="80" width="92" alt="javascript logo"  />
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" height="80" width="92" alt="mysql logo"  />
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" height="80" width="92" alt="java logo"  />
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" height="80" width="92" alt="python logo"  />
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" height="80" width="92" alt="react logo"  />
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dot-net/dot-net-original.svg" height="80" width="92" alt="dot-net logo"  />
-         
-            <br><br><br>
-            <h1>Tools and Framework</h1>
-            <br>
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/android/android-original.svg" height="80" width="92" alt="android logo"  />
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apple/apple-original.svg" height="80" width="92" alt="apple logo"  />
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows8/windows8-original.svg" height="80" width="92" alt="windows10 logo"  />
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" height="80" width="92" alt="canva logo"  />
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg" height="80" width="92" alt="canva logo"  />
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" height="80" width="92" alt="git logo"  />
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg" height="80" width="92" alt="googlecloud logo"  />
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg" height="80" width="92" alt="azure logo"  />
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" height="80" width="92" alt="vscode logo"  /> 
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/visualstudio/visualstudio-plain.svg" height="80" width="92" alt="visual studio logo"  />     
-        </section>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>~/</span>bran_livinston</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-status">
+    <div class="status-dot"></div>
+    Available for opportunities
+  </div>
+</nav>
 
-        <!-- education -->
-        <section class="container about" id="blogs">
-            <div class="main-title">
-                <h2>My <span>Education</span><span class="bg-text">Learning</span></h2>
-            </div>
-            <p class="port-text">
-                Life Long Learning
-            </p>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="tl-icon">
-                        <i class="fas fa-user-graduate"></i>
-                    </div>
-                    <p class="tl-duration">2022 - 2025</p>
-                    <h5>HNDIT<span> - SLIATE</span></h5>
-                    <p>
-                        Student at Sri Lanka Institute of Advanced Technological Education.
-                    </p>
-                </div>
-                <div class="timeline-item">
-                    <div class="tl-icon">
-                        <i class="fas fa-user-graduate"></i>
-                    </div>
-                    <p class="tl-duration">2020</p>
-                    <h5>Advanced Level<span> - Commerce.</span></h5>
-                    <p>
-                        2020 A/L - Commerce Stream Carmel Fatima College Kalmunai.
-                    </p>
-                </div>
-                <div class="timeline-item">
-                    <div class="tl-icon">
-                        <i class="fas fa-user-graduate"></i>
-                    </div>
-                    <p class="tl-duration">2017</p>
-                    <h5>Ordinary Level<span> - Tamil Medium</span></h5>
-                    <p>
-                        2017 O/L - Tamil Medium Carmel Fatima College Kalmunai.
-                    </p>
-                </div>
-                <div class="timeline-item">
-                    <div class="tl-icon">
-                        <i class="fas fa-user-graduate"></i>
-                    </div>
-                    <p class="tl-duration">2011</p>
-                    <h5>Primary Education<span> - Scholarship</span></h5>
-                    <p>
-                        Grade 5 scholarship - St. Micheal's College Batticaloa.
-                    </p>
-                </div>
-            </div>
-
-            <br><br><br><br>
-
-            <div class="main-title">
-                <h2>Open <span>Source</span><span class="bg-text">Accreditations</span></h2>
-            </div>
-            <p class="port-text">
-                Nothing ever becomes real til it is experienced.
-            </p>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="tl-icon">
-                        <i class="fas fa-briefcase"></i>
-                    </div>
-                    <p class="tl-duration">2023 - Present</p>
-                    <h5>Google Developer Student Clubs<span> <br> GDG Cloud Sri Lanka</span></h5>
-                    <p>
-                        Google Developer Student Clubs<br>
-                        Android Studio User<br>
-                        Attendee I/O '23<br>
-                        Google Cloud Innovator
-                    </p>
-                </div>
-                <div class="timeline-item">
-                    <div class="tl-icon">
-                        <i class="fas fa-briefcase"></i>
-                    </div>
-                    <p class="tl-duration">2024 - Present</p>
-                    <h5>Startup Eco System Builder<span> <br> Generation ALPHA</span></h5>
-                    <p>
-                        Mentoring <br>
-                        Networking
-                    </p>
-                </div>
-                <div class="timeline-item">
-                    <div class="tl-icon">
-                        <i class="fas fa-briefcase"></i>
-                    </div>
-                    <p class="tl-duration">2023</p>
-                    <h5>QA Engineering Boot Camp<span> <br> SLASSCOM Future Career Bridge</span></h5>
-                    <p>
-                        Automation Testing<br>
-                        Postman API
-                    </p>
-                </div>
-                <div class="timeline-item">
-                    <div class="tl-icon">
-                        <i class="fas fa-briefcase"></i>
-                    </div>
-                    <p class="tl-duration">2023 - 2025</p>
-                    <h5>Student Ambassodor<span> - Microsoft Learn </span></h5>
-                    <p>
-                        Campus Leaders <br>
-                        Event Organizing <br>
-                        Technical Development
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        
-        <!-- contact -->
-        <section class="container contact" id="contact">
-            <div class="contact-container">
-                <div class="main-title">
-                    <h2>Contact <span>Me</span><span class="bg-text">Contact</span></h2>
-                </div>
-                <div class="contact-content-con">
-                    <div class="left-contact">
-                        <h4>Contact me here</h4>
-                        <p>
-                            Feel free to get in touch with me. 
-                            I am always open to discussing new projects, 
-                            creative ideas or opportunities to be part of your vision..
-                        </p>
-                        <div class="contact-info">
-                            <div class="contact-item">
-                                <div class="icon">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span>Batticaloa | Sri Lanka</span>
-                                </div>
-                            </div>
-                            <div class="contact-item">
-                                <div class="icon">
-                                    <i class="fas fa-envelope"></i>
-                                    <span>branlivinston16@gmail.com</span>
-                                </div>
-                            </div>
-                            <div class="contact-item">
-                                <div class="icon">
-                                    <i class="fas fa-user-graduate"></i>
-                                    <span>HNDIT</span>
-                                </div>
-                            </div>
-                            <div class="contact-item">
-                                <div class="icon">
-                                    <i class="fas fa-phone"></i>
-                                    <span>+94 75 239 6046</span>
-                                </div>
-                            </div>
-                            <div class="contact-item">
-                                <div class="icon">
-                                    <i class="fas fa-globe-africa"></i>
-                                    <span>English | Tamil</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="contact-icons">
-                            <div class="contact-icon">
-                                <a href="https://www.linkedin.com/in/branlivinston" target="_blank">
-                                    <i class="fab fa-linkedin"></i>
-                                </a>
-                                <a href="https://https://www.facebook.com/profile.php?id=100093312607553" target="_blank">
-                                    <i class="fab fa-facebook-f"></i>
-                                </a>
-                                <a href="https://twitter.com/BranLivinston" target="_blank">
-                                    <i class="fab fa-twitter"></i>
-                                </a>
-                                <a href="https://github.com/Livinston-Bran" target="_blank">
-                                    <i class="fab fa-github"></i>
-                                </a>
-                                <a href="https://www.instagram.com/bran_the_real" target="_blank">
-                                    <i class="fab fa-instagram"></i>
-                                </a>
-                                <a href="https://wa.me/+94752396046" target="_blank">
-                                    <i class="fab fa-whatsapp"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- control -->
-    <div class="controls">
-        <div class="control active-btn" data-id="home" >
-            <i class="fas fa-home"></i>
-        </div>
-        <div class="control" data-id="about">
-            <i class="fas fa-user"></i>
-        </div>
-        <div class="control" data-id="blogs">
-            <i class="fas fa-user-graduate"></i>
-        </div>
-        <div class="control" data-id="contact">
-            <i class="fas fa-envelope-open"></i>
-        </div>
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-left reveal">
+      <div style="width:200px;height:240px;overflow:hidden;border:1px solid var(--border);margin-bottom:1.5rem;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,0 100%);">
+    <img src="img/hero.jpg" alt="Bran Livinston" style="width:100%;height:100%;object-fit:cover;filter:grayscale(20%);">
     </div>
-    <div class="theme-btn">
-        <i class="fas fa-adjust"></i>
+    <div class="hero-tag">Full Stack Developer</div>
+    <h1 class="hero-name">
+        Bran
+        <span class="line2">Livinston.</span>
+      </h1>
+      <div class="hero-role">building scalable web systems</div>
+      <p class="hero-desc">
+        Results-driven Full Stack Developer with 1.5+ years of commercial experience. Proficient in Next.js, React.js, TypeScript, PHP, and Laravel. Based in Colombo, Sri Lanka.
+      </p>
+     <div class="hero-btns">
+        <a href="mailto:livinstonbran@gmail.com" class="btn-primary">↗ Get in touch</a>
+        <a href="cv/Bran_Livinston_CV.pdf" download class="btn-ghost">↓ Download CV</a>
+        <a href="https://github.com/Livinston-Bran" target="_blank" class="btn-ghost">⌥ GitHub</a>
+     </div>
     </div>
-    <script src="app.js"></script>
+    <div class="hero-terminal reveal" style="transition-delay:0.2s">
+      <div class="terminal-bar">
+        <div class="t-dot r"></div>
+        <div class="t-dot y"></div>
+        <div class="t-dot g"></div>
+        <div class="terminal-title">bran@portfolio ~ zsh</div>
+      </div>
+      <div class="terminal-body">
+        <div class="t-line"><span class="t-prompt">❯</span><span class="t-cmd">cat profile.json</span></div>
+        <div class="t-line"><span class="t-out">{</span></div>
+        <div class="t-line"><span class="t-out">&nbsp;&nbsp;<span class="t-key">"role"</span>: <span class="t-string">"Full Stack Developer"</span>,</span></div>
+        <div class="t-line"><span class="t-out">&nbsp;&nbsp;<span class="t-key">"location"</span>: <span class="t-string">"Colombo, Sri Lanka"</span>,</span></div>
+        <div class="t-line"><span class="t-out">&nbsp;&nbsp;<span class="t-key">"experience"</span>: <span class="t-val">1.5</span>,</span></div>
+        <div class="t-line"><span class="t-out">&nbsp;&nbsp;<span class="t-key">"stack"</span>: [</span></div>
+        <div class="t-line"><span class="t-out">&nbsp;&nbsp;&nbsp;&nbsp;<span class="t-string">"Next.js"</span>, <span class="t-string">"React.js"</span>,</span></div>
+        <div class="t-line"><span class="t-out">&nbsp;&nbsp;&nbsp;&nbsp;<span class="t-string">"TypeScript"</span>, <span class="t-string">"PHP"</span>,</span></div>
+        <div class="t-line"><span class="t-out">&nbsp;&nbsp;&nbsp;&nbsp;<span class="t-string">"Laravel"</span>, <span class="t-string">"MySQL"</span></span></div>
+        <div class="t-line"><span class="t-out">&nbsp;&nbsp;],</span></div>
+        <div class="t-line"><span class="t-out">&nbsp;&nbsp;<span class="t-key">"open_to_work"</span>: <span class="t-val">true</span></span></div>
+        <div class="t-line"><span class="t-out">}</span></div>
+        <div class="t-line" style="margin-top:0.5rem"><span class="t-prompt">❯</span><span class="t-cursor"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item reveal"><div class="stat-num">1.5+</div><div class="stat-label">Years Experience</div></div>
+    <div class="stat-item reveal" style="transition-delay:0.1s"><div class="stat-num">49+</div><div class="stat-label">Projects Completed</div></div>
+    <div class="stat-item reveal" style="transition-delay:0.2s"><div class="stat-num">6+</div><div class="stat-num" style="font-size:1rem;color:var(--muted)"></div><div class="stat-label">Certifications</div></div>
+    <div class="stat-item reveal" style="transition-delay:0.3s"><div class="stat-num">3+</div><div class="stat-label">Leadership Roles</div></div>
+  </div>
+</div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-label">Work History</div>
+      <h2 class="section-title">Experience</h2>
+    </div>
+    <div class="exp-list">
+      <div class="exp-card reveal">
+        <div class="exp-header">
+          <div>
+            <div class="exp-title">Executive Full Stack Developer</div>
+            <div class="exp-company">INSK Group (Pvt) Ltd — Colombo, Sri Lanka</div>
+          </div>
+          <div class="exp-date">Nov 2025 – May 2026</div>
+        </div>
+        <div class="exp-type">Full-time</div>
+        <ul class="exp-bullets">
+          <li>Developed and maintained production-grade web applications using Next.js, React.js, TypeScript, PHP, and WordPress</li>
+          <li>Designed and implemented responsive, accessible frontend interfaces aligned with UI/UX best practices</li>
+          <li>Integrated third-party and internal RESTful APIs for seamless end-to-end application functionality</li>
+          <li>Managed CMS-based solutions via WordPress, including custom plugin development and theme customisation</li>
+          <li>Conducted performance profiling, debugging, and code reviews to uphold quality standards</li>
+          <li>Collaborated within a cross-functional Agile team on sprint planning and architecture discussions</li>
+        </ul>
+      </div>
+      <div class="exp-card reveal">
+        <div class="exp-header">
+          <div>
+            <div class="exp-title">Software Developer Intern</div>
+            <div class="exp-company">Amirda Pvt Ltd — Batticaloa, Sri Lanka</div>
+          </div>
+          <div class="exp-date">Oct 2024 – Jul 2025</div>
+        </div>
+        <div class="exp-type">Internship</div>
+        <ul class="exp-bullets">
+          <li>Built and maintained web applications using React.js, Laravel (PHP), and MySQL in a professional team environment</li>
+          <li>Developed RESTful APIs and integrated backend services with dynamic React.js frontends</li>
+          <li>Implemented responsive UI improvements to enhance cross-device compatibility and user experience</li>
+          <li>Used Git and GitHub for version control, participated in code reviews, and collaborated on feature branches</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-label">Portfolio</div>
+      <h2 class="section-title">Projects</h2>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card reveal">
+        <div class="project-stack">
+          <span class="stack-tag">React.js</span>
+          <span class="stack-tag">Laravel</span>
+          <span class="stack-tag">MySQL</span>
+        </div>
+        <div class="project-title">E-Library System</div>
+        <p class="project-desc">Full-stack web-based library management system supporting digital reading, book cataloguing, and user management with role-based auth.</p>
+        <a href="https://github.com/Livinston-Bran/E-Library-System" target="_blank" class="project-link">View on GitHub →</a>
+      </div>
+      <div class="project-card reveal" style="transition-delay:0.1s">
+        <div class="project-stack">
+          <span class="stack-tag">HTML5</span>
+          <span class="stack-tag">CSS3</span>
+          <span class="stack-tag">JavaScript</span>
+        </div>
+        <div class="project-title">E-Commerce Website</div>
+        <p class="project-desc">Fully responsive, cross-browser-compatible e-commerce website for a business client with modern UI/UX and interactive JS components.</p>
+        <a href="https://github.com/Livinston-Bran/E-commerce-web-page" target="_blank" class="project-link">View on GitHub →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="about">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-label">Technical</div>
+      <h2 class="section-title">Skills</h2>
+    </div>
+    <div class="skills-layout">
+      <div class="reveal">
+        <div class="skills-group-title">Core Proficiency</div>
+        <div class="skill-row">
+          <div class="skill-top"><span class="skill-name">Next.js / React.js</span><span class="skill-pct">90%</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-width="90"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-top"><span class="skill-name">TypeScript / JavaScript</span><span class="skill-pct">85%</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-width="85"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-top"><span class="skill-name">PHP / Laravel</span><span class="skill-pct">82%</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-width="82"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-top"><span class="skill-name">MySQL</span><span class="skill-pct">78%</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-width="78"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-top"><span class="skill-name">WordPress / CMS</span><span class="skill-pct">80%</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-top"><span class="skill-name">RESTful API Design</span><span class="skill-pct">85%</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-width="85"></div></div>
+        </div>
+      </div>
+      <div class="reveal" style="transition-delay:0.15s">
+        <div class="skills-group-title">Tools &amp; Platforms</div>
+        <div class="tech-tags">
+          <span class="tech-tag">Git / GitHub</span>
+          <span class="tech-tag">Postman</span>
+          <span class="tech-tag">Microsoft Azure</span>
+          <span class="tech-tag">Google Cloud</span>
+          <span class="tech-tag">VS Code</span>
+          <span class="tech-tag">Figma</span>
+          <span class="tech-tag">Android Studio</span>
+          <span class="tech-tag">Flutter</span>
+          <span class="tech-tag">C#</span>
+          <span class="tech-tag">Java</span>
+          <span class="tech-tag">Python</span>
+          <span class="tech-tag">HTML5 / CSS3</span>
+          <span class="tech-tag">Agile / Scrum</span>
+          <span class="tech-tag">Code Review</span>
+          <span class="tech-tag">Performance Optimisation</span>
+          <span class="tech-tag">Responsive Design</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-label">Academic</div>
+      <h2 class="section-title">Education</h2>
+    </div>
+    <div class="edu-grid">
+      <div class="edu-card reveal">
+        <div class="edu-year">2022 – 2025</div>
+        <div class="edu-degree">HND in Information Technology</div>
+        <div class="edu-inst">SLIATE – Sri Lanka Institute of Advanced Technological Education</div>
+        <div class="edu-detail">Batticaloa, Sri Lanka · Software engineering, database systems, web technologies &amp; OOP</div>
+      </div>
+      <div class="edu-card reveal" style="transition-delay:0.1s">
+        <div class="edu-year">2020</div>
+        <div class="edu-degree">Advanced Level — Commerce Stream</div>
+        <div class="edu-inst">Carmel Fatima College Kalmunai</div>
+        <div class="edu-detail">A/L examination, Commerce stream</div>
+      </div>
+      <div class="edu-card reveal" style="transition-delay:0.2s">
+        <div class="edu-year">2017</div>
+        <div class="edu-degree">Ordinary Level — Tamil Medium</div>
+        <div class="edu-inst">Carmel Fatima College Kalmunai</div>
+        <div class="edu-detail">O/L examination, Tamil medium</div>
+      </div>
+      <div class="edu-card reveal" style="transition-delay:0.3s">
+        <div class="edu-year">2011</div>
+        <div class="edu-degree">Grade 5 Scholarship</div>
+        <div class="edu-inst">St. Michael's College Batticaloa</div>
+        <div class="edu-detail">Primary education &amp; national scholarship examination</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section>
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-label">Credentials</div>
+      <h2 class="section-title">Certifications</h2>
+    </div>
+    <div class="certs-list">
+      <div class="cert-card reveal"><div class="cert-icon">☁</div><div><div class="cert-name">Google Cloud Computing Foundations</div><div class="cert-by">Google</div></div></div>
+      <div class="cert-card reveal" style="transition-delay:0.05s"><div class="cert-icon">⚡</div><div><div class="cert-name">Full Stack Web Development</div><div class="cert-by">University of Moratuwa Open Learning</div></div></div>
+      <div class="cert-card reveal" style="transition-delay:0.1s"><div class="cert-icon">◈</div><div><div class="cert-name">Software Development</div><div class="cert-by">Future Career Bridge, SLASSCOM</div></div></div>
+      <div class="cert-card reveal" style="transition-delay:0.15s"><div class="cert-icon">⚙</div><div><div class="cert-name">API Security Fundamentals</div><div class="cert-by">APIsec University</div></div></div>
+      <div class="cert-card reveal" style="transition-delay:0.2s"><div class="cert-icon">✓</div><div><div class="cert-name">Quality Assurance Bootcamp</div><div class="cert-by">SLASSCOM Academy</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-label">Community</div>
+      <h2 class="section-title">Leadership &amp; Community</h2>
+    </div>
+    <div class="community-grid">
+      <div class="community-card reveal">
+        <div class="c-date">Oct 2023 – Nov 2024</div>
+        <div class="c-title">Microsoft Student Ambassador</div>
+        <div class="c-org">Microsoft Learn</div>
+        <div class="c-tags"><span class="c-tag">Campus Leaders</span><span class="c-tag">Event Organising</span><span class="c-tag">Tech Dev</span></div>
+      </div>
+      <div class="community-card reveal" style="transition-delay:0.1s">
+        <div class="c-date">Nov 2023 – Present</div>
+        <div class="c-title">Postman Student Leader</div>
+        <div class="c-org">Postman</div>
+        <div class="c-tags"><span class="c-tag">API Advocacy</span><span class="c-tag">Community</span></div>
+      </div>
+      <div class="community-card reveal" style="transition-delay:0.2s">
+        <div class="c-date">Jan 2024 – Dec 2025</div>
+        <div class="c-title">Startup Ecosystem Builder</div>
+        <div class="c-org">Generation ALPHA (PVT) LTD</div>
+        <div class="c-tags"><span class="c-tag">Mentoring</span><span class="c-tag">Networking</span></div>
+      </div>
+      <div class="community-card reveal" style="transition-delay:0.3s">
+        <div class="c-date">2023 – Present</div>
+        <div class="c-title">Google Developer Student Clubs</div>
+        <div class="c-org">GDG Cloud Sri Lanka</div>
+        <div class="c-tags"><span class="c-tag">I/O '23 Attendee</span><span class="c-tag">Cloud Innovator</span></div>
+      </div>
+      <div class="community-card reveal" style="transition-delay:0.4s">
+        <div class="c-date">2023</div>
+        <div class="c-title">QA Engineering Boot Camp</div>
+        <div class="c-org">SLASSCOM Future Career Bridge</div>
+        <div class="c-tags"><span class="c-tag">Automation Testing</span><span class="c-tag">Postman API</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-label">Let's Talk</div>
+      <h2 class="section-title">Contact</h2>
+    </div>
+    <div class="contact-layout">
+      <div class="reveal">
+        <p style="color:var(--muted);line-height:1.8;margin-bottom:1rem;font-size:0.92rem;">
+          Open to full-time roles, freelance projects, and collaborations. Feel free to reach out anytime.
+        </p>
+        <div class="contact-info-list">
+          <div class="contact-row">
+            <div class="contact-icon-box">📍</div>
+            <span class="contact-val">Colombo, Sri Lanka</span>
+          </div>
+          <div class="contact-row">
+            <div class="contact-icon-box">✉</div>
+            <span class="contact-val"><a href="mailto:livinstonbran@gmail.com">livinstonbran@gmail.com</a></span>
+          </div>
+          <div class="contact-row">
+            <div class="contact-icon-box">📞</div>
+            <span class="contact-val"><a href="tel:+94752396046">+94 75 239 6046</a></span>
+          </div>
+          <div class="contact-row">
+            <div class="contact-icon-box">🎓</div>
+            <span class="contact-val">HNDIT — SLIATE</span>
+          </div>
+          <div class="contact-row">
+            <div class="contact-icon-box">🌐</div>
+            <span class="contact-val">English &amp; Tamil</span>
+          </div>
+        </div>
+        <div class="social-row">
+          <a href="https://www.linkedin.com/in/branlivinston" target="_blank" class="social-btn">in LinkedIn</a>
+          <a href="https://github.com/Livinston-Bran" target="_blank" class="social-btn">⌥ GitHub</a>
+          <a href="https://wa.me/94752396046" target="_blank" class="social-btn">✓ WhatsApp</a>
+          <a href="https://twitter.com/BranLivinston" target="_blank" class="social-btn">✕ Twitter</a>
+          <a href="https://www.instagram.com/bran_the_real" target="_blank" class="social-btn">◎ Instagram</a>
+        </div>
+      </div>
+
+      <div class="reveal" style="transition-delay:0.2s">
+        <div class="skills-group-title" style="margin-bottom:1.5rem">References</div>
+        <div class="refs-grid">
+          <div class="ref-card">
+            <div class="ref-name">Viknaraj Manogararajah</div>
+            <div class="ref-role">Principal Engineer @ IFS · Microsoft MVP</div>
+            <div class="ref-phone">+94 77 999 1042</div>
+          </div>
+          <div class="ref-card">
+            <div class="ref-name">Miuli Kalubowila</div>
+            <div class="ref-role">Founder – Generation ALPHA (PVT) LTD</div>
+            <div class="ref-phone">+94 76 709 0757</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Built by <span>Bran Livinston</span> · Full Stack Developer · Colombo, Sri Lanka · 2025</p>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animateCursor() {
+    cursor.style.transform = `translate(${mx-6}px, ${my-6}px)`;
+    rx += (mx - rx) * 0.14; ry += (my - ry) * 0.14;
+    ring.style.transform = `translate(${rx-18}px, ${ry-18}px)`;
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Skill bars
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting) {
+        e.target.querySelectorAll('.skill-fill').forEach(fill => {
+          const w = fill.dataset.width;
+          setTimeout(() => { fill.style.width = w + '%'; }, 200);
+        });
+        barObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.skills-layout').forEach(el => barObserver.observe(el));
+</script>
 </body>
 </html>
